@@ -8,9 +8,9 @@ defmodule Duden do
     get("/search_api_autocomplete/dictionary_search", query: [q: word])
     |> case do
       {:ok, %{status: 200, body: body}} ->
-        Enum.map(body, fn %{"value" => value} -> value end)
-        |> Enum.map(fn x ->
-          String.trim(x)
+        Enum.map(body, fn %{"value" => value} ->
+          value
+          |> String.trim()
           |> String.split("/")
           |> List.last()
         end)
@@ -29,15 +29,18 @@ defmodule Duden do
         article = Floki.find(body, "article")
 
         word =
-          Floki.find(article, ".lemma__title .lemma__main")
+          article
+          |> Floki.find(".lemma__title .lemma__main")
           |> Floki.text()
 
         alt_spelling =
-          Floki.find(article, ".lemma__title .lemma__alt-spelling")
+          article
+          |> Floki.find(".lemma__title .lemma__alt-spelling")
           |> Floki.text()
 
         determiner =
-          Floki.find(article, ".lemma__title .lemma__determiner")
+          article
+          |> Floki.find(".lemma__title .lemma__determiner")
           |> Floki.text()
 
         %{"word" => word, "alt_spelling" => alt_spelling, "determiner" => determiner}
