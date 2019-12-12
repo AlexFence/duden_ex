@@ -1,0 +1,36 @@
+image: elixir:1.9.4
+
+stages:  
+    - build  
+    - test
+    - lint  
+
+before_script:
+    - mix local.hex --force
+    - mix local.rebar --force
+
+build:
+    stage: build
+    script:
+    - mix deps.get
+    - mix compile --force
+
+test:
+    stage: test
+    coverage: /\[TOTAL\]\s+(\d+\.\d+)%/
+    script:
+        - mix deps.get
+        - mix test --cover
+
+lint-format:
+    stage: lint
+    allow_failure: true
+    script:
+        - mix format --check-formatted
+
+lint-credo:
+    stage: lint
+    allow_failure: true
+    script:
+        - mix deps.get
+        - mix credo --strict
