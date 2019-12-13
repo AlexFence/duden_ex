@@ -8,7 +8,7 @@ It's a simple little wrapper for [Duden's](https://duden.de) not really existing
 
 ```elixir
 iex> {:ok, results} = Duden.search("baumkuchen")
-{:ok, ["Baumkuchen", "Pruegeltorte"]}
+{:ok, [%Duden.SearchResult{...}, %Duden.SearchResult{...}]}
 iex> Duden.fetch_term(List.first(results))
 {:ok, %Duden.Term{alt_spelling: "", determiner: "der", word: "Baum­ku­chen"}}
 ```

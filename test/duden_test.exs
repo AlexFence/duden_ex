@@ -4,7 +4,10 @@ defmodule DudenTest do
   test "it can search for terms" do
     {:ok, results} = Duden.search("hanna")
     assert length(results) == 1
-    assert hd(results) == "Hanna"
+    result = hd(results)
+    assert result.id == "Hanna"
+    assert result.display_name == "Han­na, Han­nah"
+    assert result.group == "Duden-Online-Wörterbuch"
   end
 
   test "search no results" do
