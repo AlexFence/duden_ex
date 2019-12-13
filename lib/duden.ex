@@ -11,30 +11,20 @@ defmodule Duden do
     {:ok, %Duden.Term{alt_spelling: "", determiner: "der", word: "Baum­ku­chen"}}
   """
 
-  use Tesla
+  alias Duden.Http
   alias Duden.Parser
   alias Duden.Term
 
-  plug(Tesla.Middleware.BaseUrl, "https://www.duden.de")
-  plug(Tesla.Middleware.JSON)
-
   @type term_name :: String.t()
+  @type duden_error :: Http.duden_error()
+  @type not_found_error :: Http.not_found_error()
 
-  @doc """
-  Searches Duden's site for a word.
-
-    Returns a list a list of results,
-    those results can then be passed to Duden.fetch_term() for fetching a definition of that word.
-    iex> Duden.search("baumkuchen")
-    {:ok, ["Baumkuchen", "Pruegeltorte"]}
-  """
-  @spec search(String.t()) :: {:ok, [term_name]} | {:err, any}
+  @spec search(String.t()) :: {:ok, [term_name]} | duden_error
   def search(word) do
-    get("/search_api_autocomplete/dictionary_search", query: [q: word])
-    |> case do
-      {:ok, %{status: 200, body: body}} ->
+    case Http.get_search_api(word) do
+      {:ok, response} ->
         results =
-          Enum.map(body, fn %{"value" => value} ->
+          Enum.map(response, fn %{"value" => value} ->
             value
             |> String.trim()
             |> String.split("/")
@@ -42,9 +32,6 @@ defmodule Duden do
           end)
 
         {:ok, results}
-
-      {:ok, %{status: _status} = req} ->
-        {:error, req}
 
       {:error, reason} ->
         {:error, reason}
@@ -59,14 +46,11 @@ defmodule Duden do
     iex> Duden.fetch_term("Kuchen")
     {:ok, %Duden.Term{alt_spelling: "", determiner: "der", word: "Ku­chen"}}
   """
-  @spec fetch_term(term_name) :: {:ok, Term.t()} | {:err, any}
+  @spec fetch_term(term_name) :: {:ok, Term.t()} | not_found_error
   def fetch_term(term) do
-    case get("/rechtschreibung/#{term}") do
-      {:ok, %{status: 200, body: body}} ->
-        Parser.parse_term(body)
-
-      {:ok, %{status: _status} = req} ->
-        {:error, req}
+    case Http.get_term_page(term) do
+      {:ok, term_html} ->
+        Parser.parse_term(term_html)
 
       {:error, reason} ->
         {:error, reason}
