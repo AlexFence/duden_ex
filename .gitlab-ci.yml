@@ -20,7 +20,7 @@ test:
     coverage: /\[TOTAL\]\s+(\d+\.\d+)%/
     script:
         - mix deps.get
-        - mix test --cover
+        - mix test --trace --cover
 
 lint-format:
     stage: lint
