@@ -1,6 +1,17 @@
 # Duden
 
-**TODO: Add description**
+**It's Wenseday my Duden!**
+
+It's a simple little Wrapper for [Duden's](https://duden.de) not really existing API. So gets most of its data out of their HTML.
+
+## Usage
+
+```elixir
+iex> {:ok, results} = Duden.search("baumkuchen")
+{:ok, ["Baumkuchen", "Pruegeltorte"]}
+iex> Duden.fetch_term(List.first(results))
+{:ok, %Duden.Term{alt_spelling: "", determiner: "der", word: "Baum­ku­chen"}}
+```
 
 ## Installation
 
