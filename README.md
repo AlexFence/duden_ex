@@ -1,6 +1,6 @@
 # Duden_ex
 
-**It's Wenseday my Duden!**
+**It's Wednesday my Duden!**
 
 It's a simple little wrapper for [Duden's](https://duden.de) not really existing API. So it gets most of its data out of their HTML.
 
