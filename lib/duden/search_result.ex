@@ -7,7 +7,7 @@ defmodule Duden.SearchResult do
     build -> display_name
 
   """
-
+  @derive Jason.Encoder
   @enforce_keys [:id, :display_name]
   defstruct id: "",
             display_name: "",

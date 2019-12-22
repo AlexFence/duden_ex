@@ -2,7 +2,8 @@ defmodule Duden.Term do
   @moduledoc """
   A struct representing a Term.
   """
-
+  
+  @derive Jason.Encoder
   @enforce_keys [:word]
   defstruct word: nil,
             determiner: nil,
